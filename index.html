@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Caderno Espiritual</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lato:wght@300;400;700&display=swap');
+
+  :root {
+    --bg: #f5f0e8;
+    --surface: #ffffff;
+    --surface2: #f0ebe0;
+    --surface3: #e8e0d0;
+    --accent: #8b5e1a;
+    --accent2: #7a4f8a;
+    --gold: #7a4e10;
+    --text: #2c2010;
+    --text2: #5a4a30;
+    --text3: #9a8a70;
+    --border: rgba(139,94,26,0.2);
+    --border2: rgba(122,79,138,0.25);
+    --danger: #c0392b;
+    --success: #27ae60;
+    --radius: 12px;
+    --tab-h: 56px;
+    --nav-h: 58px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .guia-label { font-family: 'Cinzel', serif; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #efe8d8 0%, #f5f0e8 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px 10px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  header h1 {
+    font-size: 20px; color: var(--gold); letter-spacing: 2px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  header h1 span { font-size: 22px; }
+
+  /* NAV TABS */
+  nav {
+    display: flex; overflow-x: auto; gap: 2px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 4px; position: sticky; top: 56px; z-index: 99;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav button {
+    flex: 0 0 auto; border: none; background: none;
+    color: var(--text3); font-family: 'Cinzel', serif; font-size: 11px;
+    padding: 0 12px; height: var(--nav-h); cursor: pointer;
+    border-bottom: 2px solid transparent; white-space: nowrap;
+    transition: all 0.2s;
+  }
+  nav button.active {
+    color: var(--accent); border-bottom-color: var(--accent);
+    background: rgba(139,94,26,0.08);
+  }
+  nav button:hover { color: var(--text); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 16px; padding-bottom: 20px; }
+  .tab-content.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
+  }
+  .card-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .card-title { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold); }
+  .card-date { font-size: 11px; color: var(--text3); }
+  .card-body { font-size: 14px; color: var(--text2); line-height: 1.7; }
+  .card-tag {
+    display: inline-block; background: rgba(122,79,138,0.12);
+    border: 1px solid var(--border2); color: #7a4f8a;
+    font-size: 11px; padding: 2px 10px; border-radius: 20px; margin-bottom: 8px;
+  }
+  .card-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+  /* BUTTONS */
+  .btn {
+    border: none; border-radius: 8px; padding: 10px 18px;
+    font-family: 'Lato', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #6b4010);
+    color: #fff;
+  }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-sm {
+    padding: 6px 12px; font-size: 12px; border-radius: 6px;
+  }
+  .btn-ghost {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text2);
+  }
+  .btn-danger {
+    background: transparent; border: 1px solid rgba(192,57,43,0.4);
+    color: #e06050;
+  }
+  .btn-success {
+    background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.35);
+    color: #1a7a40;
+  }
+  .btn-full { width: 100%; margin-top: 12px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 14px; }
+  label { display: block; font-size: 12px; color: var(--text3); margin-bottom: 5px; letter-spacing: 0.5px; text-transform: uppercase; }
+  input[type=text], input[type=date], select, textarea {
+    width: 100%; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-family: 'Lato', sans-serif; font-size: 14px;
+    padding: 10px 12px; outline: none; transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  select option { background: var(--surface2); }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* MODAL */
+  .modal-bg {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75); z-index: 200;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px; width: 100%; max-width: 480px;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal h3 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 16px; margin-bottom: 16px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .modal-actions .btn { flex: 1; }
+
+  /* GUIAS TAB */
+  .guias-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .guia-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px; text-align: center;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .guia-card:hover { border-color: var(--accent); background: var(--surface2); }
+  .guia-icon { font-size: 32px; margin-bottom: 6px; }
+  .guia-label { font-size: 11px; color: var(--gold); letter-spacing: 0.5px; line-height: 1.3; }
+  .guia-count { font-size: 10px; color: var(--text3); margin-top: 3px; }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 40px 20px; color: var(--text3); }
+  .empty-icon { font-size: 40px; margin-bottom: 10px; opacity: 0.4; }
+  .empty p { font-size: 14px; }
+
+  /* IMAGE UPLOAD */
+  .img-upload-area {
+    border: 2px dashed var(--border); border-radius: var(--radius);
+    padding: 30px; text-align: center; cursor: pointer;
+    transition: border-color 0.2s; color: var(--text3);
+  }
+  .img-upload-area:hover { border-color: var(--accent); }
+  .img-upload-area input { display: none; }
+  .img-upload-icon { font-size: 36px; margin-bottom: 8px; }
+  .img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .img-item {
+    position: relative; border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--border); aspect-ratio: 1;
+  }
+  .img-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .img-item .img-del {
+    position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7);
+    border: none; color: #e06050; border-radius: 50%; width: 24px; height: 24px;
+    cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+  }
+  .img-caption {
+    font-size: 12px; color: var(--text2); padding: 4px 6px;
+    background: var(--surface2); border-top: 1px solid var(--border);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* SECTION SUBTABS */
+  .subtabs { display: flex; gap: 4px; margin-bottom: 16px; }
+  .subtab {
+    flex: 1; border: 1px solid var(--border); background: transparent;
+    color: var(--text3); font-family: 'Cinzel', serif; font-size: 11px;
+    padding: 8px 4px; border-radius: 8px; cursor: pointer; text-align: center;
+    transition: all 0.2s;
+  }
+  .subtab.active { background: rgba(139,94,26,0.1); border-color: var(--accent); color: var(--accent); }
+
+  /* FAB */
+  .fab {
+    position: fixed; bottom: 20px; right: 16px; z-index: 150;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #6b4010);
+    border: none; color: #fff; font-size: 26px; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(139,94,26,0.35);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
+  }
+  .fab:active { transform: scale(0.92); }
+
+  /* SECTION DIVIDER */
+  .section-title {
+    font-family: 'Cinzel', serif; font-size: 12px; color: var(--accent2);
+    letter-spacing: 1px; margin: 16px 0 10px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  /* EXPORT BAR */
+  .export-bar {
+    background: var(--surface); border-top: 1px solid var(--border);
+    padding: 10px 16px; position: sticky; bottom: 0;
+    display: flex; gap: 8px;
+  }
+  .export-bar .btn { flex: 1; font-size: 12px; padding: 10px; }
+
+  /* PRINT */
+  @media print {
+    header, nav, .fab, .btn, .modal-bg, .export-bar, .card-actions { display: none !important; }
+    body { background: white; color: #111; }
+    .card { border: 1px solid #ccc; break-inside: avoid; page-break-inside: avoid; }
+    .tab-content { display: block !important; }
+    .guias-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* SCROLL */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span>✦</span> Caderno Espiritual</h1>
+</header>
+
+<nav id="main-nav">
+  <button class="active" onclick="showTab('guias')">Guias</button>
+  <button onclick="showTab('aprendizados')">Aprendizados</button>
+  <button onclick="showTab('receitas')">Receitas</button>
+  <button onclick="showTab('mensagens')">Mensagens</button>
+  <button onclick="showTab('galeria')">Galeria</button>
+</nav>
+
+<!-- ===== ABA 1: GUIAS ===== -->
+<div id="tab-guias" class="tab-content active">
+  <p class="section-title">Entidades & Linhas</p>
+  <div class="guias-grid" id="guias-grid"></div>
+  <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+    <p class="section-title">Registros por Guia</p>
+    <div id="guia-detail"></div>
+  </div>
+</div>
+
+<!-- ===== ABA 2: APRENDIZADOS ===== -->
+<div id="tab-aprendizados" class="tab-content">
+  <div id="aprend-list"></div>
+  <div class="empty" id="aprend-empty">
+    <div class="empty-icon">📖</div>
+    <p>Nenhum aprendizado registrado ainda.</p>
+  </div>
+</div>
+
+<!-- ===== ABA 3: RECEITAS ===== -->
+<div id="tab-receitas" class="tab-content">
+  <div id="rec-list"></div>
+  <div class="empty" id="rec-empty">
+    <div class="empty-icon">🌿</div>
+    <p>Nenhuma receita registrada ainda.</p>
+  </div>
+</div>
+
+<!-- ===== ABA 4: MENSAGENS ===== -->
+<div id="tab-mensagens" class="tab-content">
+  <div class="subtabs">
+    <button class="subtab active" onclick="showSubtab('msg')">Mensagens</button>
+    <button class="subtab" onclick="showSubtab('pontos')">Pontos Cantados</button>
+  </div>
+  <div id="msg-list"></div>
+  <div class="empty" id="msg-empty">
+    <div class="empty-icon">💬</div>
+    <p>Nenhuma mensagem registrada ainda.</p>
+  </div>
+  <div id="pontos-list" style="display:none"></div>
+  <div class="empty" id="pontos-empty" style="display:none">
+    <div class="empty-icon">🎵</div>
+    <p>Nenhum ponto cantado registrado ainda.</p>
+  </div>
+</div>
+
+<!-- ===== ABA 5: GALERIA ===== -->
+<div id="tab-galeria" class="tab-content">
+  <label class="img-upload-area" id="upload-area" for="img-input">
+    <div class="img-upload-icon">📷</div>
+    <p style="font-size:14px; color:var(--text2);">Toque para adicionar imagem</p>
+    <p style="font-size:12px; margin-top:4px;">JPG, PNG, GIF</p>
+    <input type="file" id="img-input" accept="image/*" multiple onchange="handleImages(event)">
+  </label>
+  <div class="img-grid" id="img-grid"></div>
+  <div class="empty" id="img-empty" style="display:none">
+    <div class="empty-icon">🖼️</div>
+    <p>Nenhuma imagem adicionada ainda.</p>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="openAddModal()" title="Novo registro">+</button>
+
+<!-- ===== MODAIS ===== -->
+
+<!-- Modal Aprendizado -->
+<div class="modal-bg" id="modal-aprend">
+  <div class="modal">
+    <h3>📖 Novo Aprendizado</h3>
+    <div class="form-group">
+      <label>Data</label>
+      <input type="date" id="a-data">
+    </div>
+    <div class="form-group">
+      <label>Aprendizado</label>
+      <textarea id="a-texto" rows="6" placeholder="Escreva livremente..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-aprend')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveAprend()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Receita -->
+<div class="modal-bg" id="modal-rec">
+  <div class="modal">
+    <h3>🌿 Nova Receita</h3>
+    <div class="form-group">
+      <label>Data</label>
+      <input type="date" id="r-data">
+    </div>
+    <div class="form-group">
+      <label>Guia</label>
+      <input type="text" id="r-guia" placeholder="Ex: Caboclo Sete Flechas...">
+    </div>
+    <div class="form-group">
+      <label>Nome da Receita</label>
+      <input type="text" id="r-nome" placeholder="Ex: Banho de ervas...">
+    </div>
+    <div class="form-group">
+      <label>Itens / Ingredientes</label>
+      <textarea id="r-itens" rows="4" placeholder="Liste os itens..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Modo de Preparo</label>
+      <textarea id="r-preparo" rows="4" placeholder="Descreva o preparo..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-rec')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveRec()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Mensagem -->
+<div class="modal-bg" id="modal-msg">
+  <div class="modal">
+    <h3 id="modal-msg-title">💬 Nova Mensagem</h3>
+    <div class="form-group">
+      <label>Data</label>
+      <input type="date" id="m-data">
+    </div>
+    <div class="form-group">
+      <label>Guia</label>
+      <input type="text" id="m-guia" placeholder="Ex: Exu Tranca-Rua...">
+    </div>
+    <div class="form-group">
+      <label id="m-label">Mensagem</label>
+      <textarea id="m-texto" rows="6" placeholder="Digite aqui..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-msg')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveMsg()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Imagem Caption -->
+<div class="modal-bg" id="modal-img-cap">
+  <div class="modal">
+    <h3>📷 Descrição da Imagem</h3>
+    <div class="form-group">
+      <label>Descrição (opcional)</label>
+      <input type="text" id="img-cap-input" placeholder="Ex: Altar, Orixá Oxalá...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="skipImgCap()">Sem descrição</button>
+      <button class="btn btn-primary" onclick="saveImgCap()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Detalhe / Editar -->
+<div class="modal-bg" id="modal-view">
+  <div class="modal">
+    <h3 id="view-title">Detalhe</h3>
+    <div id="view-content"></div>
+    <div class="modal-actions" style="margin-top:16px">
+      <button class="btn btn-ghost" onclick="closeModal('modal-view')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export Bar -->
+<div class="export-bar" id="export-bar">
+  <button class="btn btn-ghost btn-sm" onclick="exportPDF()">🖨️ Imprimir / PDF</button>
+  <button class="btn btn-success btn-sm" onclick="exportJSON()">💾 Backup</button>
+  <button class="btn btn-ghost btn-sm" onclick="importJSON()">📂 Restaurar</button>
+  <input type="file" id="import-file" accept=".json" style="display:none" onchange="doImport(event)">
+</div>
+
+<script>
+const GUIAS = [
+  { id:'caboclo',    nome:'Caboclo',       icon:'🌿' },
+  { id:'preto',      nome:'Preto Velho',   icon:'👴🏿' },
+  { id:'preta',      nome:'Preta Velha',   icon:'👵🏿' },
+  { id:'ere',        nome:'Erê',           icon:'🧒' },
+  { id:'baiana',     nome:'Baiana',        icon:'💃' },
+  { id:'boiadeiro',  nome:'Boiadeiro',     icon:'🤠' },
+  { id:'exu',        nome:'Exu',           icon:'⚡' },
+  { id:'pomba',      nome:'Pomba-Gira',    icon:'🌹' },
+  { id:'marinheiro', nome:'Marinheiro',    icon:'⚓' },
+  { id:'ogum',       nome:'Linha de Ogum', icon:'🛡️' }
+];
+
+let DB = JSON.parse(localStorage.getItem('caderno_esp') || '{}');
+DB.aprendizados = DB.aprendizados || [];
+DB.receitas     = DB.receitas     || [];
+DB.mensagens    = DB.mensagens    || [];
+DB.pontos       = DB.pontos       || [];
+DB.imagens      = DB.imagens      || [];
+DB.guiaNomes    = DB.guiaNomes    || {};
+// Migra formato antigo (string) para array
+Object.keys(DB.guiaNomes).forEach(k => {
+  if(typeof DB.guiaNomes[k] === 'string') {
+    DB.guiaNomes[k] = DB.guiaNomes[k] ? [DB.guiaNomes[k]] : [];
+  }
+});
+
+function save() { localStorage.setItem('caderno_esp', JSON.stringify(DB)); }
+
+let currentTab = 'guias';
+let currentSubtab = 'msg';
+
+// ---- NAV ----
+function showTab(id) {
+  currentTab = id;
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach((b,i) => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const tabs = ['guias','aprendizados','receitas','mensagens','galeria'];
+  document.querySelectorAll('nav button')[tabs.indexOf(id)].classList.add('active');
+  renderTab(id);
+}
+
+function showSubtab(sub) {
+  currentSubtab = sub;
+  document.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('msg-list').style.display   = sub==='msg'    ? '' : 'none';
+  document.getElementById('msg-empty').style.display  = sub==='msg'    ? '' : 'none';
+  document.getElementById('pontos-list').style.display = sub==='pontos' ? '' : 'none';
+  document.getElementById('pontos-empty').style.display = sub==='pontos' ? '' : 'none';
+  renderMsg();
+}
+
+function renderTab(id) {
+  if(id==='guias')        renderGuias();
+  if(id==='aprendizados') renderAprend();
+  if(id==='receitas')     renderRec();
+  if(id==='mensagens')    { renderMsg(); }
+  if(id==='galeria')      renderImgs();
+}
+
+// ---- GUIAS ----
+function renderGuias() {
+  const grid = document.getElementById('guias-grid');
+  grid.innerHTML = GUIAS.map(g => {
+    const cnt = countGuia(g.id);
+    const nomes = DB.guiaNomes[g.id] || [];
+    const nomesStr = nomes.length ? nomes.slice(0,2).join(', ') + (nomes.length>2?'…':'') : '';
+    return `<div class="guia-card" onclick="showGuiaDetail('${g.id}')">
+      <div class="guia-icon">${g.icon}</div>
+      <div class="guia-label">${g.nome}</div>
+      ${nomesStr ? `<div style="font-size:10px;color:var(--accent2);margin-top:2px;line-height:1.3">${nomesStr}</div>` : ''}
+      <div class="guia-count" style="margin-top:4px">${cnt} registro${cnt!==1?'s':''}</div>
+    </div>`;
+  }).join('');
+}
+
+function countGuia(id) {
+  return DB.receitas.filter(r=>r.guia===id).length +
+         DB.mensagens.filter(m=>m.guia===id).length +
+         DB.pontos.filter(p=>p.guia===id).length;
+}
+
+function showGuiaDetail(id) {
+  const g = GUIAS.find(x=>x.id===id);
+  const recs  = DB.receitas.filter(r=>r.guia===id);
+  const msgs  = DB.mensagens.filter(m=>m.guia===id);
+  const ponts = DB.pontos.filter(p=>p.guia===id);
+  const nomes = DB.guiaNomes[id] || [];
+  const d = document.getElementById('guia-detail');
+
+  const nomesHtml = nomes.length ? nomes.map((n,i) => `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <span style="flex:1;font-size:14px;color:var(--text);padding:6px 10px;background:var(--surface2);border-radius:6px;border:1px solid var(--border)">${n}</span>
+      <button class="btn btn-danger btn-sm" onclick="delGuiaNome('${id}',${i})" style="padding:6px 10px">✕</button>
+    </div>`).join('') : `<p style="font-size:13px;color:var(--text3);margin-bottom:8px">Nenhum nome cadastrado ainda.</p>`;
+
+  let html = `
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <span style="font-size:28px">${g.icon}</span>
+    <span style="font-family:Cinzel;font-size:15px;color:var(--gold)">${g.nome}</span>
+  </div>
+  <div style="margin-bottom:16px">
+    <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px;text-transform:uppercase">Nomes / Entidades cadastradas</label>
+    <div id="nomes-list-${id}">${nomesHtml}</div>
+    <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+      <input type="text" id="guia-nome-new-${id}" placeholder="Ex: Caboclo Sete Flechas..." style="flex:1" onkeydown="if(event.key==='Enter')addGuiaNome('${id}')">
+      <button class="btn btn-primary btn-sm" onclick="addGuiaNome('${id}')" style="white-space:nowrap">+ Adicionar</button>
+    </div>
+  </div>`;
+
+  if(!recs.length && !msgs.length && !ponts.length) {
+    html += `<p style="color:var(--text3);font-size:13px;margin-top:4px">Nenhum registro vinculado a este guia ainda.</p>`;
+  }
+  if(msgs.length) {
+    html += `<p class="section-title">Mensagens (${msgs.length})</p>`;
+    msgs.forEach(m => { html += miniCard(m.data, m.texto, 'msg'); });
+  }
+  if(recs.length) {
+    html += `<p class="section-title">Receitas (${recs.length})</p>`;
+    recs.forEach(r => { html += miniCard(r.data, r.nome, 'rec'); });
+  }
+  if(ponts.length) {
+    html += `<p class="section-title">Pontos Cantados (${ponts.length})</p>`;
+    ponts.forEach(p => { html += miniCard(p.data, p.texto, 'ponto'); });
+  }
+  d.innerHTML = html;
+  d.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function addGuiaNome(id) {
+  const input = document.getElementById('guia-nome-new-' + id);
+  const val = input.value.trim();
+  if(!val) { input.focus(); return; }
+  if(!DB.guiaNomes[id]) DB.guiaNomes[id] = [];
+  DB.guiaNomes[id].push(val);
+  save();
+  input.value = '';
+  showGuiaDetail(id);
+  renderGuias();
+}
+
+function delGuiaNome(id, idx) {
+  if(!confirm('Remover este nome?')) return;
+  DB.guiaNomes[id].splice(idx, 1);
+  save();
+  showGuiaDetail(id);
+  renderGuias();
+}
+
+function miniCard(data, texto, tipo) {
+  const icons = {msg:'💬', rec:'🌿', ponto:'🎵'};
+  return `<div class="card" style="padding:10px 12px;margin-bottom:8px">
+    <span style="font-size:12px">${icons[tipo]||''}</span>
+    <span style="font-size:11px;color:var(--text3);margin-left:4px">${formatDate(data)}</span>
+    <p style="font-size:13px;color:var(--text2);margin-top:4px;white-space:pre-wrap;word-break:break-word">${truncate(texto,100)}</p>
+  </div>`;
+}
+
+// ---- APRENDIZADOS ----
+function renderAprend() {
+  const list = document.getElementById('aprend-list');
+  const empty = document.getElementById('aprend-empty');
+  const sorted = [...DB.aprendizados].sort((a,b)=>b.data.localeCompare(a.data));
+  if(!sorted.length) { list.innerHTML=''; empty.style.display=''; return; }
+  empty.style.display='none';
+  list.innerHTML = sorted.map((a,i) => `
+    <div class="card">
+      <div class="card-header">
+        <span class="card-date">📅 ${formatDate(a.data)}</span>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="editAprend(${a.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="delAprend(${a.id})">🗑</button>
+        </div>
+      </div>
+      <div class="card-body" style="white-space:pre-wrap;word-break:break-word">${a.texto}</div>
+    </div>`).join('');
+}
+
+function saveAprend() {
+  const data = document.getElementById('a-data').value;
+  const texto = document.getElementById('a-texto').value.trim();
+  if(!texto) { alert('Escreva algo no campo de aprendizado.'); return; }
+  const editId = document.getElementById('a-data').dataset.editId;
+  if(editId) {
+    const item = DB.aprendizados.find(a=>a.id==editId);
+    if(item) { item.data=data; item.texto=texto; }
+    delete document.getElementById('a-data').dataset.editId;
+  } else {
+    DB.aprendizados.push({ id: Date.now(), data, texto });
+  }
+  save(); closeModal('modal-aprend'); renderAprend();
+}
+
+function editAprend(id) {
+  const a = DB.aprendizados.find(x=>x.id===id);
+  document.getElementById('a-data').value = a.data;
+  document.getElementById('a-texto').value = a.texto;
+  document.getElementById('a-data').dataset.editId = id;
+  openModal('modal-aprend');
+}
+
+function delAprend(id) {
+  if(!confirm('Excluir este aprendizado?')) return;
+  DB.aprendizados = DB.aprendizados.filter(a=>a.id!==id);
+  save(); renderAprend();
+}
+
+// ---- RECEITAS ----
+function renderRec() {
+  const list = document.getElementById('rec-list');
+  const empty = document.getElementById('rec-empty');
+  const sorted = [...DB.receitas].sort((a,b)=>b.data.localeCompare(a.data));
+  if(!sorted.length) { list.innerHTML=''; empty.style.display=''; return; }
+  empty.style.display='none';
+  list.innerHTML = sorted.map(r => `
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">🌿 ${r.nome}</div>
+          <div class="card-date">📅 ${formatDate(r.data)}</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="editRec(${r.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="delRec(${r.id})">🗑</button>
+        </div>
+      </div>
+      <div class="card-tag">${guiaNome(r.guia)}</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px">ITENS</div>
+      <div class="card-body" style="margin-bottom:10px;white-space:pre-wrap;word-break:break-word">${r.itens}</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px">PREPARO</div>
+      <div class="card-body" style="white-space:pre-wrap;word-break:break-word">${r.preparo}</div>
+    </div>`).join('');
+}
+
+function saveRec() {
+  const data   = document.getElementById('r-data').value;
+  const guia   = document.getElementById('r-guia').value;
+  const nome   = document.getElementById('r-nome').value.trim();
+  const itens  = document.getElementById('r-itens').value.trim();
+  const preparo= document.getElementById('r-preparo').value.trim();
+  if(!nome) { alert('Informe o nome da receita.'); return; }
+  const editId = document.getElementById('r-data').dataset.editId;
+  if(editId) {
+    const item = DB.receitas.find(r=>r.id==editId);
+    if(item) Object.assign(item, {data,guia,nome,itens,preparo});
+    delete document.getElementById('r-data').dataset.editId;
+  } else {
+    DB.receitas.push({ id: Date.now(), data, guia, nome, itens, preparo });
+  }
+  save(); closeModal('modal-rec'); renderRec();
+}
+
+function editRec(id) {
+  const r = DB.receitas.find(x=>x.id===id);
+  document.getElementById('r-data').value   = r.data;
+  document.getElementById('r-guia').value   = r.guia;
+  document.getElementById('r-nome').value   = r.nome;
+  document.getElementById('r-itens').value  = r.itens;
+  document.getElementById('r-preparo').value= r.preparo;
+  document.getElementById('r-data').dataset.editId = id;
+  openModal('modal-rec');
+}
+
+function delRec(id) {
+  if(!confirm('Excluir esta receita?')) return;
+  DB.receitas = DB.receitas.filter(r=>r.id!==id);
+  save(); renderRec();
+}
+
+// ---- MENSAGENS / PONTOS ----
+function renderMsg() {
+  const isMsgs = currentSubtab === 'msg';
+  const data   = isMsgs ? DB.mensagens : DB.pontos;
+  const listId = isMsgs ? 'msg-list' : 'pontos-list';
+  const emptyId= isMsgs ? 'msg-empty' : 'pontos-empty';
+  const list   = document.getElementById(listId);
+  const empty  = document.getElementById(emptyId);
+  const sorted = [...data].sort((a,b)=>b.data.localeCompare(a.data));
+  if(!sorted.length) { list.innerHTML=''; empty.style.display=''; return; }
+  empty.style.display='none';
+  const icon = isMsgs ? '💬' : '🎵';
+  list.innerHTML = sorted.map(m => `
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-date">${icon} ${formatDate(m.data)}</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="editMsg(${m.id},'${isMsgs?'msg':'ponto'}')">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="delMsg(${m.id},'${isMsgs?'msg':'ponto'}')">🗑</button>
+        </div>
+      </div>
+      <div class="card-tag">${guiaNome(m.guia)}</div>
+      <div class="card-body" style="white-space:pre-wrap;word-break:break-word">${m.texto}</div>
+    </div>`).join('');
+}
+
+function saveMsg() {
+  const isMsgs = document.getElementById('modal-msg-title').dataset.tipo === 'msg';
+  const data  = document.getElementById('m-data').value;
+  const guia  = document.getElementById('m-guia').value;
+  const texto = document.getElementById('m-texto').value.trim();
+  if(!texto) { alert('Escreva o conteúdo.'); return; }
+  const arr = isMsgs ? DB.mensagens : DB.pontos;
+  const editId = document.getElementById('m-data').dataset.editId;
+  if(editId) {
+    const item = arr.find(x=>x.id==editId);
+    if(item) Object.assign(item, {data,guia,texto});
+    delete document.getElementById('m-data').dataset.editId;
+  } else {
+    arr.push({ id: Date.now(), data, guia, texto });
+  }
+  save(); closeModal('modal-msg'); renderMsg();
+}
+
+function editMsg(id, tipo) {
+  const arr = tipo==='msg' ? DB.mensagens : DB.pontos;
+  const m = arr.find(x=>x.id===id);
+  document.getElementById('m-data').value  = m.data;
+  document.getElementById('m-guia').value  = m.guia;
+  document.getElementById('m-texto').value = m.texto;
+  document.getElementById('m-data').dataset.editId = id;
+  document.getElementById('modal-msg-title').dataset.tipo = tipo;
+  document.getElementById('modal-msg-title').textContent = tipo==='msg' ? '💬 Editar Mensagem' : '🎵 Editar Ponto Cantado';
+  document.getElementById('m-label').textContent = tipo==='msg' ? 'Mensagem' : 'Letra / Ponto';
+  openModal('modal-msg');
+}
+
+function delMsg(id, tipo) {
+  if(!confirm('Excluir este registro?')) return;
+  if(tipo==='msg') DB.mensagens = DB.mensagens.filter(m=>m.id!==id);
+  else             DB.pontos    = DB.pontos.filter(p=>p.id!==id);
+  save(); renderMsg();
+}
+
+// ---- IMAGENS ----
+let pendingImages = [];
+let pendingIdx = 0;
+
+function handleImages(event) {
+  const files = Array.from(event.target.files);
+  pendingImages = files;
+  pendingIdx = 0;
+  processNextImage();
+  event.target.value = '';
+}
+
+function processNextImage() {
+  if(pendingIdx >= pendingImages.length) return;
+  const file = pendingImages[pendingIdx];
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('img-cap-input').value = file.name.replace(/\.[^.]+$/,'');
+    document.getElementById('modal-img-cap').dataset.imgData = e.target.result;
+    openModal('modal-img-cap');
+  };
+  reader.readAsDataURL(file);
+}
+
+function skipImgCap() {
+  addImage(document.getElementById('modal-img-cap').dataset.imgData, '');
+}
+
+function saveImgCap() {
+  const cap = document.getElementById('img-cap-input').value.trim();
+  addImage(document.getElementById('modal-img-cap').dataset.imgData, cap);
+}
+
+function addImage(data, caption) {
+  DB.imagens.push({ id: Date.now(), data, caption });
+  save();
+  closeModal('modal-img-cap');
+  pendingIdx++;
+  renderImgs();
+  if(pendingIdx < pendingImages.length) setTimeout(processNextImage, 300);
+}
+
+function renderImgs() {
+  const grid = document.getElementById('img-grid');
+  const empty = document.getElementById('img-empty');
+  if(!DB.imagens.length) { grid.innerHTML=''; empty.style.display=''; return; }
+  empty.style.display='none';
+  grid.innerHTML = DB.imagens.map(img => `
+    <div class="img-item">
+      <img src="${img.data}" alt="${img.caption||'Imagem'}">
+      <button class="img-del" onclick="delImg(${img.id})" title="Remover">✕</button>
+      ${img.caption ? `<div class="img-caption">${img.caption}</div>` : ''}
+    </div>`).join('');
+}
+
+function delImg(id) {
+  if(!confirm('Remover esta imagem?')) return;
+  DB.imagens = DB.imagens.filter(i=>i.id!==id);
+  save(); renderImgs();
+}
+
+// ---- FAB / MODAIS ----
+function openAddModal() {
+  const today = new Date().toISOString().split('T')[0];
+  if(currentTab==='aprendizados') {
+    document.getElementById('a-data').value  = today;
+    document.getElementById('a-texto').value = '';
+    delete document.getElementById('a-data').dataset.editId;
+    openModal('modal-aprend');
+  } else if(currentTab==='receitas') {
+    document.getElementById('r-data').value   = today;
+    document.getElementById('r-nome').value   = '';
+    document.getElementById('r-itens').value  = '';
+    document.getElementById('r-preparo').value= '';
+    delete document.getElementById('r-data').dataset.editId;
+    openModal('modal-rec');
+  } else if(currentTab==='mensagens') {
+    const tipo = currentSubtab;
+    document.getElementById('m-data').value  = today;
+    document.getElementById('m-texto').value = '';
+    delete document.getElementById('m-data').dataset.editId;
+    document.getElementById('modal-msg-title').dataset.tipo = tipo;
+    document.getElementById('modal-msg-title').textContent = tipo==='msg' ? '💬 Nova Mensagem' : '🎵 Novo Ponto Cantado';
+    document.getElementById('m-label').textContent = tipo==='msg' ? 'Mensagem' : 'Letra / Ponto';
+    openModal('modal-msg');
+  } else if(currentTab==='galeria') {
+    document.getElementById('img-input').click();
+  } else {
+    alert('Selecione uma aba (Aprendizados, Receitas, Mensagens ou Galeria) para adicionar registros.');
+  }
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-bg').forEach(m => {
+  m.addEventListener('click', e => { if(e.target===m) closeModal(m.id); });
+});
+
+// ---- EXPORT / IMPORT ----
+function exportPDF() {
+  window.print();
+}
+
+function exportJSON() {
+  const str = JSON.stringify(DB, null, 2);
+  const blob = new Blob([str], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'caderno_espiritual_backup.json';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function importJSON() { document.getElementById('import-file').click(); }
+
+function doImport(e) {
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if(confirm('Restaurar backup? Os dados atuais serão substituídos.')) {
+        DB = data;
+        DB.aprendizados = DB.aprendizados||[];
+        DB.receitas     = DB.receitas||[];
+        DB.mensagens    = DB.mensagens||[];
+        DB.pontos       = DB.pontos||[];
+        DB.imagens      = DB.imagens||[];
+        DB.guiaNomes    = DB.guiaNomes||{};
+        save(); renderTab(currentTab); renderGuias();
+        alert('Backup restaurado com sucesso!');
+      }
+    } catch(err) { alert('Arquivo inválido.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ---- HELPERS ----
+function formatDate(d) {
+  if(!d) return '—';
+  const [y,m,dd] = d.split('-');
+  return `${dd}/${m}/${y}`;
+}
+
+function guiaNome(id) {
+  const g = GUIAS.find(x=>x.id===id);
+  return g ? `${g.icon} ${g.nome}` : id;
+}
+
+function truncate(str, n) {
+  if(!str) return '';
+  return str.length > n ? str.slice(0,n) + '…' : str;
+}
+
+// ---- INIT ----
+
+renderGuias();
+renderImgs();
+</script>
+</body>
+</html>
